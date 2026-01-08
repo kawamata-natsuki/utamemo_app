@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1078264127030",
+    "project_id": "utamemo-app",
+    "storage_bucket": "utamemo-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1078264127030:android:e25a2e80e53b70125c0297",
+        "android_client_info": {
+          "package_name": "com.example.hello_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZgIns-spELgahaCTMPnlPEYmccZTQ2fA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1078264127030:android:4fe1ea97f0dbc51b5c0297",
+        "android_client_info": {
+          "package_name": "com.example.utamemo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZgIns-spELgahaCTMPnlPEYmccZTQ2fA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
