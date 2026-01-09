@@ -12,6 +12,9 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 // firebase options
 import 'package:utamemo_app/firebase_options.dart';
 
+// repositories
+import 'package:utamemo_app/data/repositories/song/in_memory_song_repository.dart';
+
 // screens
 import 'package:utamemo_app/presentation/screens/s10_song_list/s10_song_list_page.dart';
 
@@ -70,14 +73,16 @@ Future<void> reportFatalError(Object error, StackTrace stack) async {
   }
 }
 
+final songRepository = InMemorySongRepository();
+
 // --- App全体のルートウィジェット ---
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: SongsListScreen(),
+    return MaterialApp(
+      home: SongsListScreen(songRepository: songRepository),
     );
   }
 }
