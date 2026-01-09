@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:utamemo_app/constants/colors.dart';
 
 class SongsListScreen extends StatelessWidget {
-  const S10SongListPage({super.key});
+  const SongsListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
