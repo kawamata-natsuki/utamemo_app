@@ -1,4 +1,4 @@
-import 'score_record.dart';
+import 'package:utamemo_app/domain/model/score_record.dart';
 
 class Song {
   final String id;
