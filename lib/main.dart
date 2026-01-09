@@ -10,10 +10,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 // firebase options
-import 'firebase_options.dart';
+import 'package:utamemo_app/firebase_options.dart';
 
 // screens
-import 'presentation/screens/s10_song_list/s10_song_list_page.dart';
+import 'package:utamemo_app/presentation/screens/s10_song_list/s10_song_list_page.dart';
 
 // --- Entry point ---
 Future<void> main() async {
