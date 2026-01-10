@@ -7,6 +7,9 @@ import 'package:utamemo_app/data/repositories/song/song_repository.dart';
 // models
 import 'package:utamemo_app/domain/model/song.dart';
 
+// widgets
+import 'package:utamemo_app/presentation/shared/widgets/song_card.dart';
+
 class SongsListScreen extends StatelessWidget {
   const SongsListScreen({
     super.key,
@@ -55,29 +58,24 @@ class SongsListScreen extends StatelessWidget {
             itemCount: songs.length,
             itemBuilder: (context, index) {
               final song = songs[index];
-              final bestScore = song.bestScore;
-              final avgScore = song.avgScore;
 
-              return ListTile(
-                title: Text(song.title),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (song.tags.isNotEmpty)
-                      Wrap(
-                        spacing: 4,
-                        children: song.tags.map((tag) => Chip(
-                          label: Text(tag, style: const TextStyle(fontSize: 10)),
-                          padding: const EdgeInsets.all(2),
-                        )).toList(),
-                      ),
-                    Text([
-                      if (song.artistName != null) song.artistName!,
-                      '最高点: ${bestScore?.toStringAsFixed(2) ?? '-'}',
-                      '回数: ${song.scoreCount}回',
-                      if (avgScore != null) '平均点: ${avgScore.toStringAsFixed(2)}',
-                    ].join(' ')),
-                  ],
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                child: SongCard(
+                  title: song.title,
+                  artistName: song.artistName,
+                  tags: song.tags,
+                  scoreCount: song.scoreCount,
+                  bestScore: song.bestScore,
+                  avgScore: song.avgScore,
+                  onTap: () {
+                    // TODO: S11へ
+                    // Navigator.pushNamed(context, '/songs/${song.id}');
+                  },
+                  onAddScore: () {
+                    // TODO: S21へ
+                    // Navigator.pushNamed(context, '/songs/${song.id}/score/add');
+                  },
                 ),
               );
             },
