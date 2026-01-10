@@ -53,6 +53,17 @@ class InMemorySongRepository implements SongRepository {
       yield* _controller.stream;
     }
 
+    // ID から曲を 1件取得（詳細画面用）
+    @override
+    Future<Song?> getSongById(String songId) async {
+      for (final song in _songs) {
+        if (song.id == songId) {
+          return song;
+        }
+      }
+      return null;
+    }
+
     // Stream を閉じる
     void dispose() => _controller.close();
 }
