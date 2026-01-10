@@ -4,6 +4,10 @@ import 'dart:async';
 // flutter core
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+// providers
+import 'package:utamemo_app/providers/repository_providers.dart';
 
 // firebase
 import 'package:firebase_core/firebase_core.dart';
@@ -22,7 +26,12 @@ import 'package:utamemo_app/presentation/screens/s10_song_list/s10_song_list_pag
 Future<void> main() async {
   runZonedGuarded(() async {
     await bootstrap();
-    runApp(const MyApp());
+    runApp(
+      MultiProvider(
+      providers: repositoryProviders,
+      child: const MyApp(),
+      ),
+    );
   }, (error, stack) async {
     await reportFatalError(error, stack);
   });
