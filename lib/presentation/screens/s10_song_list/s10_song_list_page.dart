@@ -10,6 +10,9 @@ import 'package:utamemo_app/domain/model/song.dart';
 // widgets
 import 'package:utamemo_app/presentation/shared/widgets/song_card.dart';
 
+// screens
+import 'package:utamemo_app/presentation/screens/s11_song_detail/s11_song_detail_page.dart';
+
 class SongsListScreen extends StatelessWidget {
   const SongsListScreen({
     super.key,
@@ -69,8 +72,12 @@ class SongsListScreen extends StatelessWidget {
                   bestScore: song.bestScore,
                   avgScore: song.avgScore,
                   onTap: () {
-                    // TODO: S11へ
-                    // Navigator.pushNamed(context, '/songs/${song.id}');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => S11SongDetailPage(songId: song.id),
+                      ),
+                    );
                   },
                   onAddScore: () {
                     // TODO: S21へ
