@@ -12,6 +12,7 @@ import 'package:utamemo_app/presentation/shared/widgets/song_card.dart';
 
 // screens
 import 'package:utamemo_app/presentation/screens/s11_song_detail/s11_song_detail_page.dart';
+import 'package:utamemo_app/presentation/screens/s21_add_score/s21_add_score_page.dart';
 
 class SongsListScreen extends StatelessWidget {
   const SongsListScreen({
@@ -80,8 +81,12 @@ class SongsListScreen extends StatelessWidget {
                     );
                   },
                   onAddScore: () {
-                    // TODO: S21へ
-                    // Navigator.pushNamed(context, '/songs/${song.id}/score/add');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => S21AddScorePage(songId: song.id),
+                      ),
+                    );
                   },
                 ),
               );
