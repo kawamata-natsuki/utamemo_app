@@ -1,25 +1,18 @@
-// dart async / zones
 import 'dart:async';
 
-// flutter core
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// providers
 import 'package:utamemo_app/providers/repository_providers.dart';
 
-// firebase
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
-// firebase options
 import 'package:utamemo_app/firebase_options.dart';
 
-// repositories
-import 'package:utamemo_app/data/repositories/song/in_memory_song_repository.dart';
+import 'package:utamemo_app/data/repositories/song/song_repository.dart';
 
-// screens
 import 'package:utamemo_app/presentation/screens/s10_song_list/s10_song_list_page.dart';
 
 // --- Entry point ---
@@ -28,8 +21,8 @@ Future<void> main() async {
     await bootstrap();
     runApp(
       MultiProvider(
-      providers: repositoryProviders,
-      child: const MyApp(),
+        providers: repositoryProviders,
+        child: const MyApp(),
       ),
     );
   }, (error, stack) async {
@@ -45,14 +38,14 @@ Future<void> bootstrap() async {
   setupErrorHandlers();
 }
 
-// Firebase 初期化だけ
+// Firebase 初期化
 Future<void> initializeFirebase() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 }
 
-// エラーハンドラ設定だけ
+// エラーハンドラ設定
 void setupErrorHandlers() {
   // Flutter framework エラーを Crashlytics に記録
   FlutterError.onError = (details) {
@@ -61,12 +54,13 @@ void setupErrorHandlers() {
 
   // Flutter外（プラットフォーム/非同期）の致命的エラー
   PlatformDispatcher.instance.onError = (error, stack) {
-    reportFatalError(error, stack);
+    // 非同期処理を待たずに実行（fire-and-forget）
+    unawaited(reportFatalError(error, stack));
     return true;
   };
 }
 
-// --- エラー記録を共通化 ---
+// --- Crashlytics送信を共通化 ---
 Future<void> reportFatalError(Object error, StackTrace stack) async {
   if (Firebase.apps.isNotEmpty) {
     try {
@@ -82,8 +76,6 @@ Future<void> reportFatalError(Object error, StackTrace stack) async {
   }
 }
 
-final songRepository = InMemorySongRepository();
-
 // --- App全体のルートウィジェット ---
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -91,7 +83,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: SongsListScreen(songRepository: songRepository),
+      home: Builder(
+        builder: (context) {
+          final repository = context.watch<SongRepository>();
+          return SongsListScreen(songRepository: repository);
+        },
+      ),
     );
   }
 }
