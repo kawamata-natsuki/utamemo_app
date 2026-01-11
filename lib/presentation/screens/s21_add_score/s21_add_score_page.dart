@@ -110,7 +110,7 @@ class _S21AddScorePageState extends State<S21AddScorePage> {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<KaraokeMachine>(
-                value: _machine,
+                initialValue: _machine,
                 decoration: const InputDecoration(labelText: '採点機種'),
                 items: const [
                   DropdownMenuItem(
