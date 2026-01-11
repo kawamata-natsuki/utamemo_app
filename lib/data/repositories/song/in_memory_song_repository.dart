@@ -27,10 +27,12 @@ class InMemorySongRepository implements SongRepository {
           ScoreRecord(
             score: 83.25,
             recordedAt: DateTime(2025, 12, 26),
+            karaokeMachine: KaraokeMachine.dam,
           ),
           ScoreRecord(
             score: 81.75,
             recordedAt: DateTime(2026, 1, 1),
+            karaokeMachine: KaraokeMachine.joysound,
           ),
         ],
       ),

@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:utamemo_app/data/repositories/song/song_repository.dart';
+import 'package:utamemo_app/domain/model/score_record.dart';
 import 'package:utamemo_app/presentation/screens/s21_add_score/s21_add_score_controller.dart';
-
-enum KaraokeMachine { dam, joysound }
 
 class S21AddScorePage extends StatefulWidget {
   const S21AddScorePage({
@@ -21,6 +20,7 @@ class S21AddScorePage extends StatefulWidget {
 class _S21AddScorePageState extends State<S21AddScorePage> {
   final _formKey = GlobalKey<FormState>();
   final _scoreController = TextEditingController();
+  final _memoController = TextEditingController();
   late final S21AddScoreController _controller;
 
   KaraokeMachine? _machine;
@@ -37,42 +37,47 @@ class _S21AddScorePageState extends State<S21AddScorePage> {
   @override
   void dispose() {
     _scoreController.dispose();
+    _memoController.dispose();
     super.dispose();
   }
 
   /// 日付選択ダイアログを表示
+  ///
+  /// ユーザーが日付を選択すると、[_date]が更新される。
+  /// キャンセルした場合は何も変更されない。
   Future<void> _pickDate() async {
     final picked = await showDatePicker(
       context: context,
       initialDate: _date,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      firstDate: DateTime.now().subtract(Duration(days: 365)),
+      lastDate: DateTime.now().add(Duration(days: 7)),
     );
     if (picked != null) {
       setState(() => _date = picked);
     }
   }
 
-  /// 採点記録を保存
+  /// フォームをバリデーションし、採点記録を保存
+  ///
+  /// バリデーションが成功すると、採点記録をリポジトリに保存し、
+  /// 前の画面に戻る。失敗した場合はエラーメッセージを表示する。
   Future<void> _save() async {
     final ok = _formKey.currentState?.validate() ?? false;
     if (!ok) return;
 
-    if (_machine == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('採点機種を選択してください')),
-      );
-      return;
-    }
-
     final score = double.parse(_scoreController.text);
 
+    // 保存中フラグをセット
     setState(() => _saving = true);
     try {
+      final trimmedMemo = _memoController.text.trim();
+
       await _controller.saveScoreRecord(
         songId: widget.songId,
         score: score,
         recordedAt: _date,
+        karaokeMachine: _machine!,
+        memo: trimmedMemo.isEmpty ? null : trimmedMemo,
       );
 
       if (!mounted) return;
@@ -122,6 +127,7 @@ class _S21AddScorePageState extends State<S21AddScorePage> {
                     child: Text('JOYSOUND'),
                   ),
                 ],
+                validator: _controller.validateKaraokeMachine,
                 onChanged: (value) => setState(() => _machine = value),
               ),
               const SizedBox(height: 12),
@@ -131,6 +137,17 @@ class _S21AddScorePageState extends State<S21AddScorePage> {
                 subtitle: Text(_controller.formatDate(_date)),
                 trailing: const Icon(Icons.calendar_today),
                 onTap: _pickDate,
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _memoController,
+                decoration: const InputDecoration(
+                  labelText: 'メモ（任意）',
+                  hintText: '最大200文字',
+                ),
+                maxLength: 200,
+                maxLines: 3,
+                validator: _controller.validateMemo,
               ),
 
               const Spacer(),
