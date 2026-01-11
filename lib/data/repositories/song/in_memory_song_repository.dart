@@ -5,65 +5,80 @@ import 'package:utamemo_app/domain/model/score_record.dart';
 import 'package:utamemo_app/data/repositories/song/song_repository.dart';
 
 /// メモリ上に曲を保持する Repository（開発・UI確認用）
+///
 /// 本番では永続化実装（DB / Firestore 等）に差し替える
 class InMemorySongRepository implements SongRepository {
-    // 曲一覧を配信する Stream を管理
-    final _controller = StreamController<List<Song>>.broadcast();
+  final _controller = StreamController<List<Song>>.broadcast();
+  List<Song> _songs = [];
 
-    // 曲データを管理
-    List<Song> _songs = [];
+  InMemorySongRepository() {
+    seed();
+  }
 
-    // 初期データ投入
-    InMemorySongRepository() {
-      seed();
+  /// ダミーの初期データを投入
+  void seed() {
+    _songs = [
+      Song(
+        id: 'song_1',
+        title: 'STAY GOLD',
+        artistName: 'Hi-STANDARD',
+        tags: ['お気に入り'],
+        scoreRecords: [
+          ScoreRecord(
+            score: 83.25,
+            recordedAt: DateTime(2025, 12, 26),
+          ),
+          ScoreRecord(
+            score: 81.75,
+            recordedAt: DateTime(2026, 1, 1),
+          ),
+        ],
+      ),
+    ];
+    _emit();
+  }
+
+  void _emit() {
+    if (!_controller.isClosed) {
+      _controller.add(List.unmodifiable(_songs));
+    }
+  }
+
+  @override
+  Stream<List<Song>> watchAll() async* {
+    yield List.unmodifiable(_songs);
+    yield* _controller.stream;
+  }
+
+  @override
+  Future<Song?> getSongById(String songId) async {
+    final index = _songs.indexWhere((song) => song.id == songId);
+    return index != -1 ? _songs[index] : null;
+  }
+
+  @override
+  Future<void> addScoreRecord({
+    required String songId,
+    required ScoreRecord record,
+  }) async {
+    final index = _songs.indexWhere((song) => song.id == songId);
+    if (index == -1) {
+      throw Exception('Song not found: $songId');
     }
 
-    // ダミーの初期データ
-    void seed() {
-      _songs = [
-        Song(
-          id: 'song_1',
-          title: 'STAY GOLD',
-          artistName: 'Hi-STANDARD',
-          tags: ['お気に入り'],
-          scoreRecords: [
-            ScoreRecord(
-                score: 83.25,
-                recordedAt: DateTime(2025, 12, 26)),
-            ScoreRecord(
-                score: 81.75,
-                recordedAt: DateTime(2026, 1, 1)),
-          ],
-        ),
-      ];
-      _emit();
-    }
+    final song = _songs[index];
+    final updatedSong = Song(
+      id: song.id,
+      title: song.title,
+      artistName: song.artistName,
+      tags: song.tags,
+      scoreRecords: [...song.scoreRecords, record],
+    );
 
-    // Stream にデータを送信
-    void _emit() {
-      if (!_controller.isClosed) {
-        _controller.add(List.unmodifiable(_songs));
-      }
-    }
+    _songs[index] = updatedSong;
+    _emit();
+  }
 
-    // 全曲を監視
-    @override
-    Stream<List<Song>> watchAll() async* {
-      yield List.unmodifiable(_songs);
-      yield* _controller.stream;
-    }
-
-    // ID から曲を 1件取得（詳細画面用）
-    @override
-    Future<Song?> getSongById(String songId) async {
-      for (final song in _songs) {
-        if (song.id == songId) {
-          return song;
-        }
-      }
-      return null;
-    }
-
-    // Stream を閉じる
-    void dispose() => _controller.close();
+  @override
+  void dispose() => _controller.close();
 }
