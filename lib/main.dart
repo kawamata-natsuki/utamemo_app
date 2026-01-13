@@ -13,7 +13,7 @@ import 'package:utamemo_app/firebase_options.dart';
 
 import 'package:utamemo_app/data/repositories/song/song_repository.dart';
 
-import 'package:utamemo_app/presentation/screens/s10_song_list/s10_song_list_page.dart';
+import 'package:utamemo_app/presentation/screens/song_list/song_list_page.dart';
 
 // --- Entry point ---
 Future<void> main() async {

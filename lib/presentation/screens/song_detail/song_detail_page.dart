@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:utamemo_app/data/repositories/song/song_repository.dart';
 import 'package:utamemo_app/domain/model/song.dart';
 
-import 'package:utamemo_app/presentation/screens/s11_song_detail/s11_song_detail_controller.dart';
-import 'package:utamemo_app/presentation/screens/s21_add_score/s21_add_score_page.dart';
+import 'package:utamemo_app/presentation/screens/song_detail/song_detail_controller.dart';
+import 'package:utamemo_app/presentation/screens/score_add/score_add_page.dart';
 import 'package:utamemo_app/presentation/shared/widgets/error_scaffold.dart';
 import 'package:utamemo_app/presentation/shared/widgets/not_found_scaffold.dart';
 import 'package:utamemo_app/presentation/shared/widgets/score_history_section.dart';
@@ -15,8 +15,8 @@ import 'package:utamemo_app/presentation/shared/widgets/tags_wrap.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:utamemo_app/constants/colors.dart';
 
-class S11SongDetailPage extends StatefulWidget {
-  const S11SongDetailPage({
+class SongDetailPage extends StatefulWidget {
+  const SongDetailPage({
     super.key,
     required this.songId,
   });
@@ -24,11 +24,11 @@ class S11SongDetailPage extends StatefulWidget {
   final String songId;
 
   @override
-  State<S11SongDetailPage> createState() => _S11SongDetailPageState();
+  State<SongDetailPage> createState() => _SongDetailPageState();
 }
 
-class _S11SongDetailPageState extends State<S11SongDetailPage> {
-  late final S11SongDetailController _controller;
+class _SongDetailPageState extends State<SongDetailPage> {
+  late final SongDetailController _controller;
   late final Stream<Song?> _songStream;
 
   // 初期化
@@ -36,7 +36,7 @@ class _S11SongDetailPageState extends State<S11SongDetailPage> {
   void initState() {
     super.initState();
     final repo = context.read<SongRepository>();
-    _controller = S11SongDetailController(repo);
+    _controller = SongDetailController(repo);
     _songStream = _controller.watchSong(widget.songId);
   }
 
@@ -182,7 +182,7 @@ class _S11SongDetailPageState extends State<S11SongDetailPage> {
                   await Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => S21AddScorePage(songId: widget.songId),
+                      builder: (context) => ScoreAddPage(songId: widget.songId),
                     ),
                   );
                 },
