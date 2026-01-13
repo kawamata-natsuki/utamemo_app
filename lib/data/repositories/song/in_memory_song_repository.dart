@@ -59,6 +59,29 @@ class InMemorySongRepository implements SongRepository {
   }
 
   @override
+  Future<String> addSong({
+    required String title,
+    String? artistName,
+    List<String>? tags,
+  }) async {
+    // 簡易的なID生成（本番ではUUID等を使用）
+    final newId = 'song_${DateTime.now().millisecondsSinceEpoch}';
+
+    final newSong = Song(
+      id: newId,
+      title: title,
+      artistName: artistName,
+      tags: tags ?? [],
+      scoreRecords: [],
+    );
+
+    _songs = [..._songs, newSong];
+    _emit();
+
+    return newId;
+  }
+
+  @override
   Future<void> addScoreRecord({
     required String songId,
     required ScoreRecord record,
