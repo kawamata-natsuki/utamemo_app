@@ -21,25 +21,38 @@ class ScoreRecord {
 
   /// 実キーを計算（両方入力されている場合）
   int? get actualKey {
+    // 両方ある → 実キー
     if (originalKey != null && shiftKey != null) {
       return originalKey! + shiftKey!;
     }
+    // shiftだけある → shiftを実キー扱い（MVP運用）
     if (shiftKey != null) {
       return shiftKey;
+    }
+    // ✅ originalだけある → originalを実キー扱い（これが必要）
+    if (originalKey != null) {
+      return originalKey;
     }
     return null;
   }
 
-  /// キーの表示用文字列を生成
+  String _fmt(int v) {
+    if (v == 0) return '0';
+    return v > 0 ? '+$v' : '$v';
+  }
+
+  /// キーの表示用文字列を生成（表示はUI用）
   String? getKeyDisplay() {
     final actual = actualKey;
     if (actual == null) return null;
 
-    final actualLabel = actual >= 0 ? '+$actual' : '$actual';
+    // ✅ 0のときは補足いらない（スッキリ）
+    if (actual == 0) return '0';
+
+    final actualLabel = _fmt(actual);
 
     if (originalKey != null) {
-      final originalLabel =
-          originalKey! >= 0 ? '+$originalKey' : '$originalKey';
+      final originalLabel = _fmt(originalKey!);
       return '$actualLabel（原曲: $originalLabel）';
     }
 
