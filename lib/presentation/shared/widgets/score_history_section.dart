@@ -165,7 +165,7 @@ class _ScoreHistoryItem extends StatelessWidget {
                 child: Align(
                   alignment: Alignment.bottomRight,
                   child: Text(
-                    _formatDate(record.recordedAt),
+                    formatDate(record.recordedAt),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ),
@@ -177,8 +177,11 @@ class _ScoreHistoryItem extends StatelessWidget {
     );
   }
 
-  /// 日付をyyyy-MM-dd形式にフォーマット
-  String _formatDate(DateTime date) {
-    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+  /// 日付をフォーマット
+  String formatDate(DateTime date) {
+    final y = date.year.toString().padLeft(4, '0');
+    final m = date.month.toString().padLeft(2, '0');
+    final d = date.day.toString().padLeft(2, '0');
+    return '$y/$m/$d';
   }
 }
