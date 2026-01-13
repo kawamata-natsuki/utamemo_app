@@ -38,6 +38,27 @@ class ScoreAddController {
     return null;
   }
 
+  /// 原曲キーのバリデーション
+  String? validateOriginalKey(String? value) {
+    if (value == null || value.trim().isEmpty) return null;
+
+    final key = int.tryParse(value.trim());
+    if (key == null) return '数値で入力してください';
+    if (key < -24 || key > 24) return '±24以内の数値で入力してください';
+
+    return null;
+  }
+
+  /// 変更キーのバリデーション
+  String? validateShiftKey(String? value) {
+    if (value == null || value.trim().isEmpty) return null;
+
+    final key = int.tryParse(value.trim());
+    if (key == null) return '数値で入力してください';
+    if (key < -24 || key > 24) return '±24以内の数値で入力してください';
+    return null;
+  }
+
   /// 採点記録を保存する
   Future<void> saveScoreRecord({
     required String songId,
@@ -45,6 +66,8 @@ class ScoreAddController {
     required DateTime recordedAt,
     required KaraokeMachine karaokeMachine,
     String? memo,
+    int? originalKey,
+    int? shiftKey,
   }) async {
     // 採点記録のIDを生成（タイムスタンプベース）
     final recordId = 'score_${DateTime.now().millisecondsSinceEpoch}';
@@ -57,12 +80,17 @@ class ScoreAddController {
         recordedAt: recordedAt,
         karaokeMachine: karaokeMachine,
         memo: memo?.trim().isEmpty == true ? null : memo?.trim(),
+        originalKey: originalKey,
+        shiftKey: shiftKey,
       ),
     );
   }
 
-  /// 日付をyyyy-MM-dd形式にフォーマット
+  /// 日付をフォーマット
   String formatDate(DateTime date) {
-    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+    final y = date.year.toString().padLeft(4, '0');
+    final m = date.month.toString().padLeft(2, '0');
+    final d = date.day.toString().padLeft(2, '0');
+    return '$y/$m/$d';
   }
 }
