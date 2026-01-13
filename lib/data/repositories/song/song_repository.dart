@@ -15,6 +15,19 @@ abstract class SongRepository {
   /// 曲が存在しない場合は`null`を返す。
   Future<Song?> getSongById(String songId);
 
+  /// 新しい曲を追加する
+  ///
+  /// [title] 曲名（必須）
+  /// [artistName] アーティスト名（任意）
+  /// [tags] タグのリスト（任意）
+  ///
+  /// 追加された曲のIDを返す。
+  Future<String> addSong({
+    required String title,
+    String? artistName,
+    List<String>? tags,
+  });
+
   /// 指定された曲に採点記録を追加する
   ///
   /// [songId] 採点記録を追加する曲のID
