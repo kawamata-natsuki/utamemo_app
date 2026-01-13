@@ -1,7 +1,7 @@
 import 'package:utamemo_app/data/repositories/song/song_repository.dart';
 import 'package:utamemo_app/domain/model/score_record.dart';
 
-/// 採点追加画面のビジネスロジックを管理するコントローラー
+/// S21:採点追加画面のビジネスロジックを管理するコントローラー
 class ScoreAddController {
   ScoreAddController(this._repository);
 
@@ -46,9 +46,13 @@ class ScoreAddController {
     required KaraokeMachine karaokeMachine,
     String? memo,
   }) async {
+    // 採点記録のIDを生成（タイムスタンプベース）
+    final recordId = 'score_${DateTime.now().millisecondsSinceEpoch}';
+
     await _repository.addScoreRecord(
       songId: songId,
       record: ScoreRecord(
+        id: recordId,
         score: score,
         recordedAt: recordedAt,
         karaokeMachine: karaokeMachine,

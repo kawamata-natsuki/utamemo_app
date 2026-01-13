@@ -25,11 +25,13 @@ class InMemorySongRepository implements SongRepository {
         tags: ['お気に入り'],
         scoreRecords: [
           ScoreRecord(
+            id: 'score_1',
             score: 83.25,
             recordedAt: DateTime(2025, 12, 26),
             karaokeMachine: KaraokeMachine.dam,
           ),
           ScoreRecord(
+            id: 'score_2',
             score: 81.75,
             recordedAt: DateTime(2026, 1, 1),
             karaokeMachine: KaraokeMachine.joysound,
