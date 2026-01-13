@@ -12,6 +12,7 @@ import 'package:utamemo_app/presentation/shared/widgets/song_card.dart';
 
 // screens
 import 'package:utamemo_app/presentation/screens/s11_song_detail/s11_song_detail_page.dart';
+import 'package:utamemo_app/presentation/screens/S20_song_add/s20_song_add_page.dart';
 import 'package:utamemo_app/presentation/screens/s21_add_score/s21_add_score_page.dart';
 
 class SongsListScreen extends StatelessWidget {
@@ -35,6 +36,7 @@ class SongsListScreen extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
+
       body: StreamBuilder<List<Song>>(
         stream: songRepository.watchAll(),
         builder: (context, snapshot) {
@@ -93,6 +95,20 @@ class SongsListScreen extends StatelessWidget {
             },
           );
         },
+      ),
+
+      // 曲追加ボタン
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => S20SongAddPage(),
+            ),
+          );
+        },
+        backgroundColor: mainBrightNavy,
+        child: const Icon(Icons.add, color: textWhite),
       ),
     );
   }
