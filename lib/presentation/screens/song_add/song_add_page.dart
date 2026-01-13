@@ -6,17 +6,17 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:utamemo_app/data/repositories/song/song_repository.dart';
 
-import 'package:utamemo_app/presentation/screens/s11_song_detail/s11_song_detail_page.dart';
+import 'package:utamemo_app/presentation/screens/song_detail/song_detail_page.dart';
 
 /// 曲追加画面を表示するウィジェット
-class S20SongAddPage extends StatefulWidget {
-  const S20SongAddPage({super.key});
+class SongAddPage extends StatefulWidget {
+  const SongAddPage({super.key});
 
   @override
-  State<S20SongAddPage> createState() => _S20SongAddPageState();
+  State<SongAddPage> createState() => _SongAddPageState();
 }
 
-class _S20SongAddPageState extends State<S20SongAddPage> {
+class _SongAddPageState extends State<SongAddPage> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _artistController = TextEditingController();
@@ -54,7 +54,7 @@ class _S20SongAddPageState extends State<S20SongAddPage> {
       // 取得した songId で S11 へ遷移
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (_) => S11SongDetailPage(songId: songId),
+          builder: (_) => SongDetailPage(songId: songId),
         ),
       );
     } catch (e) {

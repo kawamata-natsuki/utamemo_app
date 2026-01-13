@@ -11,9 +11,9 @@ import 'package:utamemo_app/domain/model/song.dart';
 import 'package:utamemo_app/presentation/shared/widgets/song_card.dart';
 
 // screens
-import 'package:utamemo_app/presentation/screens/s11_song_detail/s11_song_detail_page.dart';
-import 'package:utamemo_app/presentation/screens/S20_song_add/s20_song_add_page.dart';
-import 'package:utamemo_app/presentation/screens/s21_add_score/s21_add_score_page.dart';
+import 'package:utamemo_app/presentation/screens/song_detail/song_detail_page.dart';
+import 'package:utamemo_app/presentation/screens/song_add/song_add_page.dart';
+import 'package:utamemo_app/presentation/screens/score_add/score_add_page.dart';
 
 class SongsListScreen extends StatelessWidget {
   const SongsListScreen({
@@ -78,7 +78,7 @@ class SongsListScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => S11SongDetailPage(songId: song.id),
+                        builder: (context) => SongDetailPage(songId: song.id),
                       ),
                     );
                   },
@@ -86,7 +86,7 @@ class SongsListScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => S21AddScorePage(songId: song.id),
+                        builder: (context) => ScoreAddPage(songId: song.id),
                       ),
                     );
                   },
@@ -103,7 +103,7 @@ class SongsListScreen extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => S20SongAddPage(),
+              builder: (context) => SongAddPage(),
             ),
           );
         },

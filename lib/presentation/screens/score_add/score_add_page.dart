@@ -3,10 +3,10 @@ import 'package:provider/provider.dart';
 
 import 'package:utamemo_app/data/repositories/song/song_repository.dart';
 import 'package:utamemo_app/domain/model/score_record.dart';
-import 'package:utamemo_app/presentation/screens/s21_add_score/s21_add_score_controller.dart';
+import 'package:utamemo_app/presentation/screens/score_add/score_add_controller.dart';
 
-class S21AddScorePage extends StatefulWidget {
-  const S21AddScorePage({
+class ScoreAddPage extends StatefulWidget {
+  const ScoreAddPage({
     super.key,
     required this.songId,
   });
@@ -14,14 +14,14 @@ class S21AddScorePage extends StatefulWidget {
   final String songId;
 
   @override
-  State<S21AddScorePage> createState() => _S21AddScorePageState();
+  State<ScoreAddPage> createState() => _ScoreAddPageState();
 }
 
-class _S21AddScorePageState extends State<S21AddScorePage> {
+class _ScoreAddPageState extends State<ScoreAddPage> {
   final _formKey = GlobalKey<FormState>();
   final _scoreController = TextEditingController();
   final _memoController = TextEditingController();
-  late final S21AddScoreController _controller;
+  late final ScoreAddController _controller;
 
   KaraokeMachine? _machine;
   DateTime _date = DateTime.now();
@@ -31,7 +31,7 @@ class _S21AddScorePageState extends State<S21AddScorePage> {
   void initState() {
     super.initState();
     final repo = context.read<SongRepository>();
-    _controller = S21AddScoreController(repo);
+    _controller = ScoreAddController(repo);
   }
 
   @override

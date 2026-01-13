@@ -2,8 +2,8 @@ import 'package:utamemo_app/data/repositories/song/song_repository.dart';
 import 'package:utamemo_app/domain/model/score_record.dart';
 
 /// 採点追加画面のビジネスロジックを管理するコントローラー
-class S21AddScoreController {
-  S21AddScoreController(this._repository);
+class ScoreAddController {
+  ScoreAddController(this._repository);
 
   final SongRepository _repository;
 
