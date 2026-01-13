@@ -6,6 +6,7 @@ import 'package:utamemo_app/domain/model/song.dart';
 
 import 'package:utamemo_app/presentation/screens/song_detail/song_detail_controller.dart';
 import 'package:utamemo_app/presentation/screens/score_add/score_add_page.dart';
+import 'package:utamemo_app/presentation/screens/score_detail/score_detail_page.dart';
 import 'package:utamemo_app/presentation/shared/widgets/error_scaffold.dart';
 import 'package:utamemo_app/presentation/shared/widgets/not_found_scaffold.dart';
 import 'package:utamemo_app/presentation/shared/widgets/score_history_section.dart';
@@ -190,16 +191,15 @@ class _SongDetailPageState extends State<SongDetailPage> {
                 onViewAll: song.scoreRecords.length > 20 ? _navigateToScoreHistoryList : null,
                 // 採点詳細画面へ遷移
                 onRecordTap: (record) {
-                  // TODO: S22採点詳細画面への遷移
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => S22ScoreDetailPage(
-                  //       songId: widget.songId,
-                  //       record: record,
-                  //     ),
-                  //   ),
-                  // );
+                  Navigator.push(
+                     context,
+                     MaterialPageRoute(
+                      builder: (context) => ScoreDetailPage(
+                        songId: widget.songId,
+                        scoreRecordId: record.id,
+                      ),
+                     ),
+                   );
                 },
               ),
             ],

@@ -1,3 +1,7 @@
-*.dart
-text
-eol=lf
+# Always use LF in repository
+* text=auto eol=lf
+
+# Explicit file types
+*.dart  text eol=lf
+*.yaml  text eol=lf
+*.md    text eol=lf
