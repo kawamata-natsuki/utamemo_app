@@ -12,6 +12,9 @@ import 'package:utamemo_app/presentation/shared/widgets/score_history_section.da
 import 'package:utamemo_app/presentation/shared/widgets/score_summary_card.dart';
 import 'package:utamemo_app/presentation/shared/widgets/tags_wrap.dart';
 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:utamemo_app/constants/colors.dart';
+
 class S11SongDetailPage extends StatefulWidget {
   const S11SongDetailPage({
     super.key,
@@ -26,7 +29,7 @@ class S11SongDetailPage extends StatefulWidget {
 
 class _S11SongDetailPageState extends State<S11SongDetailPage> {
   late final S11SongDetailController _controller;
-  late Future<Song?> _songFuture;
+  late final Stream<Song?> _songStream;
 
   // 初期化
   @override
@@ -34,24 +37,17 @@ class _S11SongDetailPageState extends State<S11SongDetailPage> {
     super.initState();
     final repo = context.read<SongRepository>();
     _controller = S11SongDetailController(repo);
-    _songFuture = _controller.loadSong(widget.songId);
-  }
-
-  // 曲情報を更新
-  void _refreshSong() {
-    setState(() {
-      _songFuture = _controller.loadSong(widget.songId);
-    });
+    _songStream = _controller.watchSong(widget.songId);
   }
 
   // 画面構築
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Song?>(
-      future: _songFuture,
+    return StreamBuilder<Song?>(
+      stream: _songStream,
       builder: (context, snapshot) {
-        // 読み込み中の表示
-        if (snapshot.connectionState != ConnectionState.done) {
+        // 読み込み中の表示（初期データがない場合）
+        if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
@@ -76,33 +72,87 @@ class _S11SongDetailPageState extends State<S11SongDetailPage> {
         }
 
         final scoreCount = song.scoreCount;
-        final bestScore = song.bestScore;
-        final avgScore = song.avgScore;
 
-        // 曲詳細画面の表示
         return Scaffold(
           appBar: AppBar(
             title: const Text('曲詳細'),
+            centerTitle: true,
+            backgroundColor: mainNavy,
+            iconTheme: const IconThemeData(color: textWhite),
+            titleTextStyle: const TextStyle(
+              color: textWhite,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
             actions: [
               IconButton(
-                tooltip: '編集',
-                onPressed: null, // TODO: S12へ
-                icon: const Icon(Icons.edit),
-              ),
-              IconButton(
-                tooltip: '削除',
-                onPressed: null, // TODO: 削除確認ダイアログ
-                icon: const Icon(Icons.delete_outline),
+                tooltip: '設定',
+                onPressed: () { /* TODO: 設定画面へ遷移 */ },
+                icon: const FaIcon(
+                  FontAwesomeIcons.gear,
+                  size: 20,
+                  color: textWhite,
+                ),
               ),
             ],
           ),
+
           body: ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              Text(
-                song.title,
-                style: Theme.of(context).textTheme.headlineSmall,
+              // 曲名＋メニュー
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      song.title,
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                  ),
+                  // メニュー
+                  PopupMenuButton<String>(
+                    icon: const FaIcon(
+                      FontAwesomeIcons.ellipsisVertical,
+                      size: 18,
+                    ),
+                    tooltip: 'メニュー',
+                    onSelected: (value) {
+                      if (value == 'edit') {
+                        // TODO: 曲編集モーダル（今後実装）
+                      } else if (value == 'delete') {
+                        // TODO: 削除確認ダイアログ表示
+                        _showDeleteConfirmDialog(context, song);
+                      }
+                    },
+                    itemBuilder: (context) => const [
+                      PopupMenuItem(
+                        value: 'edit',
+                        child: Row(
+                          children: [
+                            Icon(Icons.edit, size: 20),
+                            SizedBox(width: 8),
+                            Text('編集'),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: 'delete',
+                        child: Row(
+                          children: [
+                            Icon(Icons.delete_outline, size: 20),
+                            SizedBox(width: 8),
+                            Text('削除'),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
+
+              // アーティスト名
               const SizedBox(height: 8),
               if (song.artistName?.trim().isNotEmpty ?? false)
                 Text(
@@ -110,17 +160,24 @@ class _S11SongDetailPageState extends State<S11SongDetailPage> {
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               const SizedBox(height: 12),
+
+              // タグ
               if (song.tags.isNotEmpty) TagsWrap(tags: song.tags),
               const SizedBox(height: 16),
+
+              // 採点サマリー
               if (scoreCount > 0)
                 ScoreSummaryCard(
-                  bestScore: bestScore,
-                  avgScore: (scoreCount >= 2) ? avgScore : null,
+                  bestScore: song.bestScore,
+                  avgScore: scoreCount >= 2 ? song.avgScore : null,
                   scoreCount: scoreCount,
                 ),
               const SizedBox(height: 20),
+
+              // 採点履歴セクション
               ScoreHistorySection(
-                hasRecords: scoreCount > 0,
+                scoreRecords: song.scoreRecords,
+                // 採点追加画面へ遷移
                 onAdd: () async {
                   await Navigator.push(
                     context,
@@ -128,13 +185,64 @@ class _S11SongDetailPageState extends State<S11SongDetailPage> {
                       builder: (context) => S21AddScorePage(songId: widget.songId),
                     ),
                   );
-                  _refreshSong();
+                },
+                // 採点履歴一覧画面へ遷移
+                onViewAll: song.scoreRecords.length > 20 ? _navigateToScoreHistoryList : null,
+                // 採点詳細画面へ遷移
+                onRecordTap: (record) {
+                  // TODO: S22採点詳細画面への遷移
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => S22ScoreDetailPage(
+                  //       songId: widget.songId,
+                  //       record: record,
+                  //     ),
+                  //   ),
+                  // );
                 },
               ),
             ],
           ),
         );
       },
+    );
+  }
+
+  // S23 採点履歴一覧画面への遷移
+  void _navigateToScoreHistoryList() {
+    // TODO: S23画面実装時にコメント解除
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => S23ScoreHistoryPage(songId: widget.songId),
+    //   ),
+    // );
+  }
+
+  // 削除確認ダイアログを表示
+  void _showDeleteConfirmDialog(BuildContext context, Song song) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('曲を削除'),
+        content: Text('「${song.title}」を削除してもよろしいですか？'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('キャンセル'),
+          ),
+          TextButton(
+            onPressed: () {
+              // TODO: 実際の削除処理（Repository経由）
+              Navigator.of(context).pop(); // ダイアログを閉じる
+              Navigator.of(context).pop(); // 曲詳細画面を閉じて一覧に戻る
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('削除'),
+          ),
+        ],
+      ),
     );
   }
 }
