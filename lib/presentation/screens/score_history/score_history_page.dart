@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:utamemo_app/constants/colors.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import 'package:utamemo_app/data/repositories/song/song_repository.dart';
 import 'package:utamemo_app/presentation/screens/score_history/score_history_controller.dart';
+import 'package:utamemo_app/presentation/shared/widgets/app_bar.dart';
 
 /// S23: 採点履歴一覧画面（1曲分）
 class ScoreHistoryPage extends StatefulWidget {
@@ -36,27 +34,10 @@ class _ScoreHistoryPageState extends State<ScoreHistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('採点履歴'),
-        centerTitle: true,
-        backgroundColor: mainNavy,
-        iconTheme: const IconThemeData(color: textWhite),
-        titleTextStyle: const TextStyle(
-          color: textWhite,
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
-        actions: [
-          IconButton(
-            tooltip: '設定',
-            onPressed: () { /* TODO: 設定画面へ遷移 */ },
-            icon: const FaIcon(
-              FontAwesomeIcons.gear,
-              size: 20,
-              color: textWhite,
-            ),
-          ),
-        ],
+      appBar: buildAppBar(
+        context,
+        title: '採点履歴',
+        type: AppBarType.normal,
       ),
 
       body: StreamBuilder<ScoreHistoryData?>(

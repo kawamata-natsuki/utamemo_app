@@ -9,6 +9,7 @@ import 'package:utamemo_app/domain/model/song.dart';
 
 // widgets
 import 'package:utamemo_app/presentation/shared/widgets/song_card.dart';
+import 'package:utamemo_app/presentation/shared/widgets/app_bar.dart';
 
 // screens
 import 'package:utamemo_app/presentation/screens/song_detail/song_detail_page.dart';
@@ -26,15 +27,10 @@ class SongsListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Uta Memo'),
-        centerTitle: true,
-        backgroundColor: mainNavy,
-        titleTextStyle: const TextStyle(
-          color: textWhite,
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
+      appBar: buildAppBar(
+        context,
+        title: 'UtaMemo',
+        type: AppBarType.home,
       ),
 
       body: StreamBuilder<List<Song>>(
