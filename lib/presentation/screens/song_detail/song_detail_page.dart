@@ -7,6 +7,8 @@ import 'package:utamemo_app/domain/model/song.dart';
 import 'package:utamemo_app/presentation/screens/song_detail/song_detail_controller.dart';
 import 'package:utamemo_app/presentation/screens/score_add/score_add_page.dart';
 import 'package:utamemo_app/presentation/screens/score_detail/score_detail_page.dart';
+import 'package:utamemo_app/presentation/screens/score_history/score_history_page.dart';
+
 import 'package:utamemo_app/presentation/shared/widgets/error_scaffold.dart';
 import 'package:utamemo_app/presentation/shared/widgets/not_found_scaffold.dart';
 import 'package:utamemo_app/presentation/shared/widgets/score_history_section.dart';
@@ -211,13 +213,12 @@ class _SongDetailPageState extends State<SongDetailPage> {
 
   // S23 採点履歴一覧画面への遷移
   void _navigateToScoreHistoryList() {
-    // TODO: S23画面実装時にコメント解除
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => S23ScoreHistoryPage(songId: widget.songId),
-    //   ),
-    // );
+    Navigator.push(
+       context,
+       MaterialPageRoute(
+         builder: (context) => ScoreHistoryPage(songId: widget.songId),
+       ),
+     );
   }
 
   // 削除確認ダイアログを表示
