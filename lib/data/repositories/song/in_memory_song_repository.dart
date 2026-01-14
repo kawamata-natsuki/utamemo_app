@@ -39,6 +39,27 @@ class InMemorySongRepository implements SongRepository {
             karaokeMachine: KaraokeMachine.joysound,
             shiftKey: 3,
           ),
+          ScoreRecord(
+            id: 'score_3',
+            score: 80.00,
+            recordedAt: DateTime(2026, 1, 2),
+            karaokeMachine: KaraokeMachine.joysound,
+            shiftKey: 1,
+          ),
+          ScoreRecord(
+            id: 'score_4',
+            score: 79.50,
+            recordedAt: DateTime(2026, 1, 3),
+            karaokeMachine: KaraokeMachine.joysound,
+            shiftKey: 1,
+          ),
+          ScoreRecord(
+            id: 'score_5',
+            score: 78.00,
+            recordedAt: DateTime(2026, 1, 4),
+            karaokeMachine: KaraokeMachine.joysound,
+            shiftKey: 0,
+          ),
         ],
       ),
     ];
