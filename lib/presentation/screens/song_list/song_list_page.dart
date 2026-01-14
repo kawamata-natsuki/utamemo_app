@@ -15,8 +15,8 @@ import 'package:utamemo_app/presentation/screens/song_detail/song_detail_page.da
 import 'package:utamemo_app/presentation/screens/song_add/song_add_page.dart';
 import 'package:utamemo_app/presentation/screens/score_add/score_add_page.dart';
 
-class SongsListScreen extends StatelessWidget {
-  const SongsListScreen({
+class SongsListPage extends StatelessWidget {
+  const SongsListPage({
     super.key,
     required this.songRepository,
   });

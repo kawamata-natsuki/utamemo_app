@@ -86,7 +86,7 @@ class MyApp extends StatelessWidget {
       home: Builder(
         builder: (context) {
           final repository = context.watch<SongRepository>();
-          return SongsListScreen(songRepository: repository);
+          return SongsListPage(songRepository: repository);
         },
       ),
     );
