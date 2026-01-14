@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:utamemo_app/data/repositories/song/song_repository.dart';
+import 'package:utamemo_app/domain/model/song.dart';
+
 /// S23 用：採点履歴一覧のデータ（画面が参照する形に統一）
 class ScoreHistoryData {
   const ScoreHistoryData({
@@ -35,28 +38,29 @@ class ScoreHistoryScoreRecord {
 
 /// S23: 採点履歴一覧のコントローラー
 class ScoreHistoryController {
-  // ScoreHistoryController(this._repo);
-  // final SongRepository _repo;
+  ScoreHistoryController(this._repo);
+  final SongRepository _repo;
 
-  /// 採点履歴一覧に必要なデータを取得
-  Stream<ScoreHistoryData?> watchScoreHistory(String songId) async* {
-    final dummy = ScoreHistoryData(
-      song: const ScoreHistorySong(
-        title: 'テスト曲（仮）',
-        artistName: 'テストアーティスト',
-      ),
-      scoreRecords: [
-        ScoreHistoryScoreRecord(
-          score: 95.50,
-          recordedAt: DateTime.now().subtract(const Duration(days: 1)),
-        ),
-        ScoreHistoryScoreRecord(
-          score: 92.10,
-          recordedAt: DateTime.now().subtract(const Duration(days: 7)),
-        ),
-      ],
-    );
+  /// 実データ版：全曲監視 → songIdの曲を抽出 → S23表示用データへ変換
+  Stream<ScoreHistoryData?> watchScoreHistory(String songId) {
+    return _repo.watchAll().map((songs) {
+      final Song? song = _firstOrNull(songs.where((s) => s.id == songId));
+      if (song == null) return null;
 
-    yield dummy;
+      final records = song.scoreRecords.toList()
+        ..sort((a, b) => b.recordedAt.compareTo(a.recordedAt));
+
+      return ScoreHistoryData(
+        song: ScoreHistorySong(
+          title: song.title,
+          artistName: song.artistName,
+        ),
+        scoreRecords: records
+            .map((r) => ScoreHistoryScoreRecord(score: r.score, recordedAt: r.recordedAt))
+            .toList(),
+      );
+    });
   }
+
+  T? _firstOrNull<T>(Iterable<T> it) => it.isEmpty ? null : it.first;
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:utamemo_app/constants/colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'package:utamemo_app/data/repositories/song/song_repository.dart';
 import 'package:utamemo_app/presentation/screens/score_history/score_history_controller.dart';
 
 /// S23: 採点履歴一覧画面（1曲分）
@@ -25,7 +27,8 @@ class _ScoreHistoryPageState extends State<ScoreHistoryPage> {
   @override
   void initState() {
     super.initState();
-    _controller = ScoreHistoryController();
+    final repo = context.read<SongRepository>();
+    _controller = ScoreHistoryController(repo);
 
     _dataStream = _controller.watchScoreHistory(widget.songId);
   }
