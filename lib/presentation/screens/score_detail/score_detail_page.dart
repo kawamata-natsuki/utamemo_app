@@ -5,8 +5,10 @@ import 'package:utamemo_app/constants/colors.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:utamemo_app/data/repositories/song/song_repository.dart';
+
 import 'package:utamemo_app/presentation/screens/score_detail/score_detail_controller.dart';
 import 'package:utamemo_app/presentation/shared/widgets/tags_wrap.dart';
+import 'package:utamemo_app/presentation/screens/score_history/score_history_page.dart';
 
 /// S22:採点詳細画面
 class ScoreDetailPage extends StatefulWidget {
@@ -235,16 +237,10 @@ class _ScoreDetailPageState extends State<ScoreDetailPage> {
                     Center(
                       child: TextButton(
                         onPressed: () {
-                          // TODO: 採点履歴一覧ページ（S??）を作成したらここから遷移する
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (_) => ScoreHistoryPage(songId: widget.songId),
-                          //   ),
-                          // );
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('採点履歴一覧ページは未実装です'),
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => ScoreHistoryPage(songId: widget.songId),
                             ),
                           );
                         },
