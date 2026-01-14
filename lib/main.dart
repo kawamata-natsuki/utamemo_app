@@ -14,6 +14,7 @@ import 'package:utamemo_app/firebase_options.dart';
 import 'package:utamemo_app/data/repositories/song/song_repository.dart';
 
 import 'package:utamemo_app/presentation/screens/song_list/song_list_page.dart';
+import 'package:utamemo_app/presentation/screens/settings/settings_page.dart';
 
 // --- Entry point ---
 Future<void> main() async {
@@ -83,6 +84,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      routes: {
+        '/settings': (_) => const SettingsPage(),
+      },
       home: Builder(
         builder: (context) {
           final repository = context.watch<SongRepository>();

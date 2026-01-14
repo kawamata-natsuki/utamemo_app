@@ -3,7 +3,10 @@ import 'package:provider/provider.dart';
 
 import 'package:utamemo_app/data/repositories/song/song_repository.dart';
 import 'package:utamemo_app/domain/model/score_record.dart';
+
 import 'package:utamemo_app/presentation/screens/score_add/score_add_controller.dart';
+
+import 'package:utamemo_app/presentation/shared/widgets/app_bar.dart';
 
 class ScoreAddPage extends StatefulWidget {
   const ScoreAddPage({
@@ -192,7 +195,11 @@ class _ScoreAddPageState extends State<ScoreAddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('採点追加')),
+    appBar: buildAppBar(
+      context,
+      title: '採点追加',
+      type: AppBarType.normal,
+    ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Form(

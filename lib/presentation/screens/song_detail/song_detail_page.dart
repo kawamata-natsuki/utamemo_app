@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:utamemo_app/data/repositories/song/song_repository.dart';
 import 'package:utamemo_app/domain/model/song.dart';
 
@@ -14,9 +16,7 @@ import 'package:utamemo_app/presentation/shared/widgets/not_found_scaffold.dart'
 import 'package:utamemo_app/presentation/shared/widgets/score_history_section.dart';
 import 'package:utamemo_app/presentation/shared/widgets/score_summary_card.dart';
 import 'package:utamemo_app/presentation/shared/widgets/tags_wrap.dart';
-
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:utamemo_app/constants/colors.dart';
+import 'package:utamemo_app/presentation/shared/widgets/app_bar.dart';
 
 class SongDetailPage extends StatefulWidget {
   const SongDetailPage({
@@ -77,27 +77,10 @@ class _SongDetailPageState extends State<SongDetailPage> {
         final scoreCount = song.scoreCount;
 
         return Scaffold(
-          appBar: AppBar(
-            title: const Text('曲詳細'),
-            centerTitle: true,
-            backgroundColor: mainNavy,
-            iconTheme: const IconThemeData(color: textWhite),
-            titleTextStyle: const TextStyle(
-              color: textWhite,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-            actions: [
-              IconButton(
-                tooltip: '設定',
-                onPressed: () { /* TODO: 設定画面へ遷移 */ },
-                icon: const FaIcon(
-                  FontAwesomeIcons.gear,
-                  size: 20,
-                  color: textWhite,
-                ),
-              ),
-            ],
+          appBar: buildAppBar(
+            context,
+            title: '曲詳細',
+            type: AppBarType.normal,
           ),
 
           body: ListView(

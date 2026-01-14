@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:utamemo_app/constants/colors.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:utamemo_app/data/repositories/song/song_repository.dart';
 
 import 'package:utamemo_app/presentation/screens/score_detail/score_detail_controller.dart';
 import 'package:utamemo_app/presentation/shared/widgets/tags_wrap.dart';
 import 'package:utamemo_app/presentation/screens/score_history/score_history_page.dart';
+import 'package:utamemo_app/presentation/shared/widgets/app_bar.dart';
 
 /// S22:採点詳細画面
 class ScoreDetailPage extends StatefulWidget {
@@ -48,16 +48,10 @@ class _ScoreDetailPageState extends State<ScoreDetailPage> {
         // データ読み込み中
         if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
           return Scaffold(
-            appBar: AppBar(
-              title: const Text('採点詳細'),
-              centerTitle: true,
-              backgroundColor: mainNavy,
-              iconTheme: const IconThemeData(color: textWhite),
-              titleTextStyle: const TextStyle(
-                color: textWhite,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+            appBar: buildAppBar(
+              context,
+              title: '採点詳細',
+              type: AppBarType.normal,
             ),
             body: const Center(child: CircularProgressIndicator()),
           );
@@ -67,16 +61,10 @@ class _ScoreDetailPageState extends State<ScoreDetailPage> {
         final data = snapshot.data;
         if (data == null) {
           return Scaffold(
-            appBar: AppBar(
-              title: const Text('採点詳細'),
-              centerTitle: true,
-              backgroundColor: mainNavy,
-              iconTheme: const IconThemeData(color: textWhite),
-              titleTextStyle: const TextStyle(
-                color: textWhite,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+            appBar: buildAppBar(
+              context,
+              title: '採点詳細',
+              type: AppBarType.normal,
             ),
             body: const Center(child: Text('データが見つかりません')),
           );
@@ -84,27 +72,10 @@ class _ScoreDetailPageState extends State<ScoreDetailPage> {
 
         // データ表示
         return Scaffold(
-          appBar: AppBar(
-            title: const Text('採点詳細'),
-            centerTitle: true,
-            backgroundColor: mainNavy,
-            iconTheme: const IconThemeData(color: textWhite),
-            titleTextStyle: const TextStyle(
-              color: textWhite,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-            actions: [
-              IconButton(
-                tooltip: '設定',
-                onPressed: () { /* TODO: 設定画面へ遷移 */ },
-                icon: const FaIcon(
-                  FontAwesomeIcons.gear,
-                  size: 20,
-                  color: textWhite,
-                ),
-              ),
-            ],
+          appBar: buildAppBar(
+            context,
+            title: '採点詳細',
+            type: AppBarType.normal,
           ),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(16),

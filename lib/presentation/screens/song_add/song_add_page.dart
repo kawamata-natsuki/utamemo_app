@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:utamemo_app/constants/colors.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:utamemo_app/data/repositories/song/song_repository.dart';
 
 import 'package:utamemo_app/presentation/screens/song_detail/song_detail_page.dart';
+
+import 'package:utamemo_app/presentation/shared/widgets/app_bar.dart';
 
 /// 曲追加画面を表示するウィジェット
 class SongAddPage extends StatefulWidget {
@@ -72,27 +73,10 @@ class _SongAddPageState extends State<SongAddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('曲追加'),
-        centerTitle: true,
-        backgroundColor: mainNavy,
-        iconTheme: const IconThemeData(color: textWhite),
-        titleTextStyle: const TextStyle(
-          color: textWhite,
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
-        actions: [
-          IconButton(
-            tooltip: '設定',
-            onPressed: () { /* TODO: 設定画面へ遷移 */ },
-            icon: const FaIcon(
-              FontAwesomeIcons.gear,
-              size: 20,
-              color: textWhite,
-            ),
-          ),
-        ],
+      appBar: buildAppBar(
+        context,
+        title: '曲追加',
+        type: AppBarType.normal,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
