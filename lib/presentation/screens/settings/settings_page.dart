@@ -15,7 +15,7 @@ class SettingsPage extends StatelessWidget {
       appBar: buildAppBar(
         context,
         title: '設定',
-        type: AppBarType.settings,
+        type: AppBarType.settingsRoot,
       ),
       body: ListView(
         children: [
@@ -67,7 +67,7 @@ class SettingsPage extends StatelessWidget {
               color: textSub,
             ),
             onTap: () {
-              // TODO: お問い合わせへ遷移（今回は繋がない）
+              Navigator.pushNamed(context, '/settings/contact');
             },
           ),
 
