@@ -16,6 +16,7 @@ import 'package:utamemo_app/data/repositories/song/song_repository.dart';
 import 'package:utamemo_app/presentation/screens/song_list/song_list_page.dart';
 import 'package:utamemo_app/presentation/screens/settings/settings_page.dart';
 import 'package:utamemo_app/presentation/screens/settings/contact_page.dart';
+import 'package:utamemo_app/presentation/screens/settings/stats_page.dart';
 
 // --- Entry point ---
 Future<void> main() async {
@@ -88,6 +89,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/settings': (_) => const SettingsPage(),
         '/settings/contact': (_) => const ContactPage(),
+        '/settings/stats': (_) => const StatsPage(),
       },
       home: Builder(
         builder: (context) {
