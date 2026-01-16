@@ -54,7 +54,7 @@ class SettingsPage extends StatelessWidget {
               color: textSub,
             ),
             onTap: () {
-              // TODO: 統計画面へ遷移（今回は繋がない）
+              Navigator.pushNamed(context, '/settings/stats');
             },
           ),
           const Divider(height: 1),
