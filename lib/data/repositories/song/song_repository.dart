@@ -39,6 +39,20 @@ abstract class SongRepository {
     required ScoreRecord record,
   });
 
+  /// 全曲から指定カスタムタグを外し、外れた曲数を返す
+  ///
+  /// [tagName] 外すカスタムタグ
+  Future<int> removeCustomTagFromAllSongs(String tagName);
+
+  /// 全曲で指定カスタムタグ名を置換し、影響した曲数を返す
+  ///
+  /// [from] 置換前のカスタムタグ名
+  /// [to] 置換後のカスタムタグ名
+  Future<int> renameCustomTagInAllSongs({
+    required String from,
+    required String to,
+  });
+
   /// リポジトリのリソースを解放する
   ///
   /// ストリームの購読やその他のリソースをクリーンアップする。

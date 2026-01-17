@@ -243,5 +243,60 @@ class InMemorySongRepository implements SongRepository {
   }
 
   @override
+  Future<int> removeCustomTagFromAllSongs(String tagName) async {
+    final target = tagName.trim();
+    if (target.isEmpty) return 0;
+
+    var affected = 0;
+
+    _songs = _songs.map((song) {
+      if (!song.tags.contains(target)) return song;
+      affected += 1;
+
+      final newTags = song.tags.where((t) => t != target).toList(growable: false);
+
+      // Song が copyWith を持ってないなら、Song(...) で組み立て直し
+      return Song(
+        id: song.id,
+        title: song.title,
+        artistName: song.artistName,
+        tags: newTags,
+        scoreRecords: song.scoreRecords,
+      );
+    }).toList(growable: false);
+
+    _emit();
+    return affected;
+  }
+
+  @override
+  Future<int> renameCustomTagInAllSongs({required String from, required String to}) async {
+    final fromN = from.trim();
+    final toN = to.trim();
+    if (fromN.isEmpty || toN.isEmpty) return 0;
+    if (fromN == toN) return 0;
+
+    var affected = 0;
+
+    _songs = _songs.map((song) {
+      if (!song.tags.contains(fromN)) return song;
+      affected += 1;
+
+      final newTags = song.tags.map((t) => t == fromN ? toN : t).toList(growable: false);
+
+      return Song(
+        id: song.id,
+        title: song.title,
+        artistName: song.artistName,
+        tags: newTags,
+        scoreRecords: song.scoreRecords,
+      );
+    }).toList(growable: false);
+
+    _emit();
+    return affected;
+  }
+
+  @override
   void dispose() => _controller.close();
 }
