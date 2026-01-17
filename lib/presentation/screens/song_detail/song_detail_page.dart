@@ -9,7 +9,6 @@ import 'package:utamemo_app/domain/model/song.dart';
 import 'package:utamemo_app/presentation/screens/song_detail/song_detail_controller.dart';
 import 'package:utamemo_app/presentation/screens/song_edit/song_edit_page.dart';
 import 'package:utamemo_app/presentation/screens/score_add/score_add_page.dart';
-import 'package:utamemo_app/presentation/screens/score_detail/score_detail_page.dart';
 import 'package:utamemo_app/presentation/screens/score_history/score_history_page.dart';
 
 import 'package:utamemo_app/presentation/shared/widgets/error_scaffold.dart';
@@ -168,6 +167,7 @@ class _SongDetailPageState extends State<SongDetailPage> {
 
               // 採点履歴セクション
               ScoreHistorySection(
+                songId: widget.songId,
                 scoreRecords: song.scoreRecords,
                 // 採点追加画面へ遷移
                 onAdd: () async {
@@ -178,20 +178,8 @@ class _SongDetailPageState extends State<SongDetailPage> {
                     ),
                   );
                 },
-                // 採点履歴一覧画面へ遷移
-                onViewAll: song.scoreRecords.length > 20 ? _navigateToScoreHistoryList : null,
-                // 採点詳細画面へ遷移
-                onRecordTap: (record) {
-                  Navigator.push(
-                     context,
-                     MaterialPageRoute(
-                      builder: (context) => ScoreDetailPage(
-                        songId: widget.songId,
-                        scoreRecordId: record.id,
-                      ),
-                     ),
-                   );
-                },
+                // 採点履歴一覧画面へ遷移（3件を超える場合）
+                onViewAll: song.scoreRecords.length > 3 ? _navigateToScoreHistoryList : null,
               ),
             ],
           ),
