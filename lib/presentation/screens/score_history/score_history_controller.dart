@@ -28,12 +28,18 @@ class ScoreHistorySong {
 /// 画面表示に必要な最小の採点行（点数＋日付）
 class ScoreHistoryScoreRecord {
   const ScoreHistoryScoreRecord({
+    required this.id,
     required this.score,
     required this.recordedAt,
+    this.memo,
+    this.shiftKey,
   });
 
+  final String id;
   final double score;
   final DateTime recordedAt;
+  final String? memo;
+  final int? shiftKey;
 }
 
 /// S23: 採点履歴一覧のコントローラー
@@ -56,7 +62,13 @@ class ScoreHistoryController {
           artistName: song.artistName,
         ),
         scoreRecords: records
-            .map((r) => ScoreHistoryScoreRecord(score: r.score, recordedAt: r.recordedAt))
+            .map((r) => ScoreHistoryScoreRecord(
+                  id: r.id,
+                  score: r.score,
+                  recordedAt: r.recordedAt,
+                  memo: r.memo,
+                  shiftKey: r.shiftKey,
+                ))
             .toList(),
       );
     });

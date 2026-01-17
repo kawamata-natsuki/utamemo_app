@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:utamemo_app/data/repositories/song/song_repository.dart';
 import 'package:utamemo_app/presentation/screens/score_history/score_history_controller.dart';
 import 'package:utamemo_app/presentation/shared/widgets/app_bar.dart';
+import 'package:utamemo_app/presentation/shared/widgets/score_row_widget.dart';
 
 /// S23: 採点履歴一覧画面（1曲分）
 class ScoreHistoryPage extends StatefulWidget {
@@ -79,15 +80,31 @@ class _ScoreHistoryPageState extends State<ScoreHistoryPage> {
                 const Divider(height: 1),
                 const SizedBox(height: 8),
 
-                // TODO: ここに「点数・日付のみ」の一覧（ListView）を実装
+                // 採点履歴一覧
                 Expanded(
-                  child: ListView.builder(
-                    itemCount: data.scoreRecords.length,
-                    itemBuilder: (context, index) {
-                      final r = data.scoreRecords[index];
-                      return ListTile(
-                        title: Text(r.score.toStringAsFixed(2)),
-                        subtitle: Text(_formatDate(r.recordedAt)),
+                  child: Builder(
+                    builder: (context) {
+                      // 最高得点を計算（採点回数が2回以上の場合）
+                      final bestScore = data.scoreRecords.length >= 2
+                          ? data.scoreRecords
+                              .map((r) => r.score)
+                              .reduce((a, b) => a > b ? a : b)
+                          : null;
+
+                      return ListView.builder(
+                        itemCount: data.scoreRecords.length,
+                        itemBuilder: (context, index) {
+                          final r = data.scoreRecords[index];
+                          return ScoreRowWidget(
+                            songId: widget.songId,
+                            scoreRecordId: r.id,
+                            score: r.score,
+                            recordedAt: r.recordedAt,
+                            hasMemo: r.memo != null && r.memo!.trim().isNotEmpty,
+                            hasKeyChange: r.shiftKey != null && r.shiftKey != 0,
+                            isBestScore: bestScore != null && r.score == bestScore,
+                          );
+                        },
                       );
                     },
                   ),
@@ -98,12 +115,5 @@ class _ScoreHistoryPageState extends State<ScoreHistoryPage> {
         },
       ),
     );
-  }
-
-  String _formatDate(DateTime dt) {
-    final y = dt.year.toString().padLeft(4, '0');
-    final m = dt.month.toString().padLeft(2, '0');
-    final d = dt.day.toString().padLeft(2, '0');
-    return '$y-$m-$d';
   }
 }

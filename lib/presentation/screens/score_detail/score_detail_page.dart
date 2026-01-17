@@ -12,6 +12,7 @@ import 'package:utamemo_app/presentation/screens/score_edit/score_edit_page.dart
 import 'package:utamemo_app/presentation/shared/widgets/tags_wrap.dart';
 import 'package:utamemo_app/presentation/screens/score_history/score_history_page.dart';
 import 'package:utamemo_app/presentation/shared/widgets/app_bar.dart';
+import 'package:utamemo_app/presentation/shared/widgets/score_row_widget.dart';
 
 /// S22:採点詳細画面
 class ScoreDetailPage extends StatefulWidget {
@@ -234,30 +235,22 @@ class _ScoreDetailPageState extends State<ScoreDetailPage> {
                         ),
                   ),
                   const SizedBox(height: 12),
-                  ...data.recentRecords.map((record) => Card(
-                        margin: const EdgeInsets.only(bottom: 8),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                '${record.score.toStringAsFixed(2)}点',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              Text(
-                                _controller.formatDate(record.recordedAt),
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )),
+                  // 最高得点を計算（全レコードから）
+                  ...() {
+                    final bestScore = data.song.scoreRecords.length >= 2
+                        ? data.song.scoreRecords.map((r) => r.score).reduce((a, b) => a > b ? a : b)
+                        : null;
+
+                    return data.recentRecords.map((record) => ScoreRowWidget(
+                      songId: widget.songId,
+                      scoreRecordId: record.id,
+                      score: record.score,
+                      recordedAt: record.recordedAt,
+                      hasMemo: record.memo != null && record.memo!.trim().isNotEmpty,
+                      hasKeyChange: record.shiftKey != null && record.shiftKey != 0,
+                      isBestScore: bestScore != null && record.score == bestScore,
+                    ));
+                  }(),
                   if (data.hasMoreRecords) ...[
                     const SizedBox(height: 8),
                     Center(
