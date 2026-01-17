@@ -7,6 +7,7 @@ import 'package:utamemo_app/data/repositories/song/song_repository.dart';
 import 'package:utamemo_app/domain/model/song.dart';
 
 import 'package:utamemo_app/presentation/screens/song_detail/song_detail_controller.dart';
+import 'package:utamemo_app/presentation/screens/song_edit/song_edit_page.dart';
 import 'package:utamemo_app/presentation/screens/score_add/score_add_page.dart';
 import 'package:utamemo_app/presentation/screens/score_detail/score_detail_page.dart';
 import 'package:utamemo_app/presentation/screens/score_history/score_history_page.dart';
@@ -104,11 +105,16 @@ class _SongDetailPageState extends State<SongDetailPage> {
                       size: 18,
                     ),
                     tooltip: 'メニュー',
-                    onSelected: (value) {
+                    onSelected: (value) async {
                       if (value == 'edit') {
-                        // TODO: 曲編集モーダル（今後実装）
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SongEditPage(songId: song.id),
+                          ),
+                        );
                       } else if (value == 'delete') {
-                        // TODO: 削除確認ダイアログ表示
+                        // 削除確認ダイアログ表示
                         _showDeleteConfirmDialog(context, song);
                       }
                     },
