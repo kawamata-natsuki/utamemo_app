@@ -21,14 +21,14 @@ class SettingsPage extends StatelessWidget {
         children: [
           ListTile(
             leading: const FaIcon(FontAwesomeIcons.tags),
-            title: const Text('タグ管理'),
+            title: const Text('カスタムタグ管理'),
             trailing: const FaIcon(
               FontAwesomeIcons.chevronRight,
               size: 16,
               color: textSub,
             ),
             onTap: () {
-              // TODO: タグ管理画面へ遷移（今回は繋がない）
+              Navigator.pushNamed(context, '/settings/tag_management');
             },
           ),
           const Divider(height: 1),
