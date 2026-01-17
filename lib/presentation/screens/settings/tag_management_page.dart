@@ -43,7 +43,7 @@ class TagManagementPage extends StatelessWidget {
 
           return ListView.separated(
             itemCount: itemCount,
-            separatorBuilder: (_, __) => const Divider(height: 1),
+            separatorBuilder: (context, index) => const Divider(height: 1),
             itemBuilder: (context, index) {
 
               // 0: タグ追加行
@@ -55,6 +55,7 @@ class TagManagementPage extends StatelessWidget {
                     // タグ上限チェック
                     if (tags.length >= _maxCustomTags) {
                       await _showTagLimitDialog(context, max: _maxCustomTags);
+                      if (!context.mounted) return;
                       return;
                     }
 
@@ -62,6 +63,7 @@ class TagManagementPage extends StatelessWidget {
                       context,
                       title: 'タグを追加',
                     );
+                    if (!context.mounted) return;
                     if (name == null) return;
 
                     final v = name.trim();
@@ -70,12 +72,14 @@ class TagManagementPage extends StatelessWidget {
                     // 予約語チェック（曲ステータス名の重複を防ぐ）
                     if (_reservedStatusNames.contains(v)) {
                       await _showReservedNameDialog(context, v);
+                      if (!context.mounted) return;
                       return;
                     }
 
                     // すでに存在する場合
                     if (tags.contains(v)) {
                       await _showAlreadyExistsDialog(context, v);
+                      if (!context.mounted) return;
                       return;
                     }
 
@@ -115,6 +119,7 @@ class TagManagementPage extends StatelessWidget {
                           title: 'タグ名を編集',
                           initialValue: tag,
                         );
+                        if (!context.mounted) return;
                         if (newName == null) return;
 
                         final v2 = newName.trim();
@@ -123,6 +128,7 @@ class TagManagementPage extends StatelessWidget {
                         // 曲ステータス名に変更しようとしている
                         if (_reservedStatusNames.contains(v2)) {
                           await _showReservedNameDialog(context, v2);
+                          if (!context.mounted) return;
                           return;
                         }
 
@@ -132,6 +138,7 @@ class TagManagementPage extends StatelessWidget {
                         // 既に存在するタグ名に変更しようとしている
                         if (tags.contains(v2)) {
                           await _showAlreadyExistsDialog(context, v2);
+                          if (!context.mounted) return;
                           return;
                         }
 
@@ -143,12 +150,14 @@ class TagManagementPage extends StatelessWidget {
 
                       case _TagMenu.delete:
                         final n = await _countSongsUsingTag(context, tag);
+                        if (!context.mounted) return;
 
                         final ok = await _confirmDelete(
                           context,
                           tag: tag,
                           songCount: n,
                         );
+                        if (!context.mounted) return;
                         if (ok != true) return;
 
                         // 1) 全曲からタグ解除
@@ -209,7 +218,7 @@ class _NoticeCard extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.04),
+          color: Colors.black.withValues(alpha: 0.04),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: Colors.black12),
         ),
