@@ -74,6 +74,28 @@ abstract class SongRepository {
     List<String>? tags,
   });
 
+  /// 採点記録を更新する
+  ///
+  /// [songId] 曲のID
+  /// [record] 更新する採点記録（idを含む完全なScoreRecordオブジェクト）
+  ///
+  /// 曲または採点記録が存在しない場合は例外をスローする。
+  Future<void> updateScoreRecord({
+    required String songId,
+    required ScoreRecord record,
+  });
+
+  /// 採点記録を削除する
+  ///
+  /// [songId] 曲のID
+  /// [scoreRecordId] 削除する採点記録のID
+  ///
+  /// 曲または採点記録が存在しない場合は例外をスローする。
+  Future<void> deleteScoreRecord({
+    required String songId,
+    required String scoreRecordId,
+  });
+
   /// リポジトリのリソースを解放する
   ///
   /// ストリームの購読やその他のリソースをクリーンアップする。

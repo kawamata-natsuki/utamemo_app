@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:utamemo_app/constants/colors.dart';
 
 import 'package:utamemo_app/data/repositories/song/song_repository.dart';
+import 'package:utamemo_app/domain/model/score_record.dart';
 
 import 'package:utamemo_app/presentation/screens/score_detail/score_detail_controller.dart';
+import 'package:utamemo_app/presentation/screens/score_edit/score_edit_page.dart';
 import 'package:utamemo_app/presentation/shared/widgets/tags_wrap.dart';
 import 'package:utamemo_app/presentation/screens/score_history/score_history_page.dart';
 import 'package:utamemo_app/presentation/shared/widgets/app_bar.dart';
@@ -83,11 +86,63 @@ class _ScoreDetailPageState extends State<ScoreDetailPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // 曲情報
-                Text(
-                  data.song.title,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        data.song.title,
+                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
                       ),
+                    ),
+                    PopupMenuButton<String>(
+                      icon: const FaIcon(
+                        FontAwesomeIcons.ellipsisVertical,
+                        size: 18,
+                      ),
+                      tooltip: 'メニュー',
+                      onSelected: (value) async {
+                        if (value == 'edit') {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ScoreEditPage(
+                                songId: widget.songId,
+                                scoreRecordId: widget.scoreRecordId,
+                              ),
+                            ),
+                          );
+                        } else if (value == 'delete') {
+                          await _showDeleteConfirmDialog(context, data.currentRecord);
+                        }
+                      },
+                      itemBuilder: (context) => const [
+                        PopupMenuItem(
+                          value: 'edit',
+                          child: Row(
+                            children: [
+                              Icon(Icons.edit, size: 20),
+                              SizedBox(width: 8),
+                              Text('編集'),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'delete',
+                          child: Row(
+                            children: [
+                              Icon(Icons.delete_outline, size: 20),
+                              SizedBox(width: 8),
+                              Text('削除'),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
                 if (data.song.artistName != null) ...[
                   const SizedBox(height: 4),
@@ -256,5 +311,47 @@ class _ScoreDetailPageState extends State<ScoreDetailPage> {
         ),
       ],
     );
+  }
+
+  Future<void> _showDeleteConfirmDialog(
+      BuildContext context, ScoreRecord record) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('採点記録を削除'),
+        content: Text('${record.score.toStringAsFixed(2)}点の記録を削除してもよろしいですか？'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('キャンセル'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('削除'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+    if (!context.mounted) return;
+
+    try {
+      final repo = context.read<SongRepository>();
+      await repo.deleteScoreRecord(
+        songId: widget.songId,
+        scoreRecordId: record.id,
+      );
+
+      if (!context.mounted) return;
+      // 削除成功したら前の画面に戻る
+      Navigator.of(context).pop();
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('削除に失敗しました: $e')),
+      );
+    }
   }
 }

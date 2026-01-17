@@ -10,6 +10,7 @@ import 'package:utamemo_app/data/repositories/song/song_repository.dart';
 /// 本番では永続化実装（DB / Firestore 等）に差し替える
 class InMemorySongRepository implements SongRepository {
   final _controller = StreamController<List<Song>>.broadcast();
+  /// 曲情報のリスト
   List<Song> _songs = [];
 
   InMemorySongRepository() {
@@ -333,6 +334,58 @@ class InMemorySongRepository implements SongRepository {
       tags: tags ?? current.tags,
     );
 
+    _emit();
+  }
+
+  @override
+  Future<void> updateScoreRecord({
+    required String songId,
+    required ScoreRecord record,
+  }) async {
+    final songIndex = _songs.indexWhere((s) => s.id == songId);
+    // 曲が存在しない場合は例外をスロー
+    if (songIndex == -1) {
+      throw Exception('Song not found: $songId');
+    }
+
+    final song = _songs[songIndex];
+    final recordIndex = song.scoreRecords.indexWhere((r) => r.id == record.id);
+    // 採点記録が存在しない場合は例外をスロー
+    if (recordIndex == -1) {
+      throw Exception('Score record not found: ${record.id}');
+    }
+
+    // scoreRecordsを更新
+    final updatedRecords = List<ScoreRecord>.from(song.scoreRecords);
+    updatedRecords[recordIndex] = record;
+
+    // Songを更新
+    _songs[songIndex] = song.copyWith(scoreRecords: updatedRecords);
+    _emit();
+  }
+
+  @override
+  Future<void> deleteScoreRecord({
+    required String songId,
+    required String scoreRecordId,
+  }) async {
+    final songIndex = _songs.indexWhere((s) => s.id == songId);
+    // 曲が存在しない場合は例外をスロー
+    if (songIndex == -1) {
+      throw Exception('Song not found: $songId');
+    }
+
+    final song = _songs[songIndex];
+    // 採点記録が存在しない場合は例外をスロー
+    final updatedRecords = song.scoreRecords
+        .where((r) => r.id != scoreRecordId)
+        .toList();
+
+    if (updatedRecords.length == song.scoreRecords.length) {
+      throw Exception('Score record not found: $scoreRecordId');
+    }
+
+    _songs[songIndex] = song.copyWith(scoreRecords: updatedRecords);
     _emit();
   }
 
