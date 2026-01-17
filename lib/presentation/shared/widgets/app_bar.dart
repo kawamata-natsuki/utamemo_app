@@ -6,6 +6,7 @@ import 'package:utamemo_app/constants/colors.dart';
 enum AppBarType {
   home,       // S10 曲一覧（ホーム）
   normal,     // 通常画面
+  child,      // 子画面
   settingsRoot,   // 設定画面（ルート）
   settingsChild,   // 設定画面（子）
 }
@@ -32,6 +33,10 @@ PreferredSizeWidget buildAppBar(
     case AppBarType.normal:
       showHome = true;
       showSettings = true;
+    case AppBarType.child:
+      showHome = false;
+      showSettings = true;
+    break;
   }
 
   return AppBar(

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:utamemo_app/domain/model/song.dart';
 import 'package:utamemo_app/domain/model/score_record.dart';
+import 'package:utamemo_app/domain/model/song_status.dart';
 import 'package:utamemo_app/data/repositories/song/song_repository.dart';
 
 /// メモリ上に曲を保持する Repository（開発・UI確認用）
@@ -22,7 +23,8 @@ class InMemorySongRepository implements SongRepository {
         id: 'song_1',
         title: 'STAY GOLD',
         artistName: 'Hi-STANDARD',
-        tags: ['お気に入り'],
+        tags: ['盛り上がる'],
+        statuses: [SongStatus.favorite],
         scoreRecords: [
           ScoreRecord(
             id: 'score_1',
@@ -178,6 +180,7 @@ class InMemorySongRepository implements SongRepository {
     _emit();
   }
 
+  /// 全曲情報を更新する
   void _emit() {
     if (!_controller.isClosed) {
       _controller.add(List.unmodifiable(_songs));
@@ -194,6 +197,19 @@ class InMemorySongRepository implements SongRepository {
   Future<Song?> getSongById(String songId) async {
     final index = _songs.indexWhere((song) => song.id == songId);
     return index != -1 ? _songs[index] : null;
+  }
+
+  @override
+  Stream<Song?> watchById(String songId) async* {
+    // 初回は現在の値を流す
+    final index = _songs.indexWhere((song) => song.id == songId);
+    yield index != -1 ? _songs[index] : null;
+
+    // 以降は_controllerのstreamから該当曲を抽出して流す
+    yield* _controller.stream.map((songs) {
+      final idx = songs.indexWhere((song) => song.id == songId);
+      return idx != -1 ? songs[idx] : null;
+    });
   }
 
   @override
@@ -295,6 +311,29 @@ class InMemorySongRepository implements SongRepository {
 
     _emit();
     return affected;
+  }
+
+  @override
+  Future<void> updateSong({
+    required String songId,
+    String? title,
+    String? artistName,
+    List<SongStatus>? statuses,
+    List<String>? tags,
+  }) async {
+    final idx = _songs.indexWhere((s) => s.id == songId);
+    if (idx == -1) throw Exception('Song not found');
+
+    final current = _songs[idx];
+
+    _songs[idx] = current.copyWith(
+      title: title ?? current.title,
+      artistName: artistName ?? current.artistName,
+      statuses: statuses ?? current.statuses,
+      tags: tags ?? current.tags,
+    );
+
+    _emit();
   }
 
   @override
