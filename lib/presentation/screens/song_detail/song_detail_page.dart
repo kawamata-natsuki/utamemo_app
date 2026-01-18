@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:utamemo_app/data/repositories/song/song_repository.dart';
 import 'package:utamemo_app/domain/model/song.dart';
+import 'package:utamemo_app/domain/model/song_status.dart';
 
 import 'package:utamemo_app/presentation/screens/song_detail/song_detail_controller.dart';
 import 'package:utamemo_app/presentation/screens/song_edit/song_edit_page.dart';
@@ -151,6 +152,20 @@ class _SongDetailPageState extends State<SongDetailPage> {
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               const SizedBox(height: 12),
+
+              // 曲ステータス
+              if (song.statuses.isNotEmpty) ...[
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: song.statuses.map((status) {
+                    return Chip(
+                      label: Text(status.label, style: const TextStyle(fontSize: 12)),
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 8),
+              ],
 
               // タグ
               if (song.tags.isNotEmpty) TagsWrap(tags: song.tags),
